@@ -1,4 +1,5 @@
-var  connectedPeers = {};
+var connectedPeers = {};
+var readyPeers = []; // Array to store connected peers
 function onMessage(ws, message) {
   var type = message.type;
   switch (type) {
@@ -17,12 +18,24 @@ function onMessage(ws, message) {
     default:
       throw new Error('invalid message type');
   }
+
 }
 
 function onInit(ws, id) {
   console.log('init from peer:', id);
   ws.id = id;
   connectedPeers[id] = ws;
+
+  // Check to see connected peers is already in array else add to array.
+  if (readyPeers.indexOf(Number(id)) === -1) {
+    readyPeers.push(Number(id));
+  }
+
+  // Sending an event with data fo connected peers to the signalling server.
+  connectedPeers[id].send(JSON.stringify({
+    type:'ready',
+    ready:readyPeers,
+  }));
 }
 
 function onOffer(offer, destination, source) {
@@ -32,6 +45,7 @@ function onOffer(offer, destination, source) {
     offer:offer,
     source:source,
   }));
+  console.log('What is inside this:', connectedPeers[destination]);
 }
 
 function onAnswer(answer, destination, source) {

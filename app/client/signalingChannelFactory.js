@@ -25,6 +25,8 @@ function SignalingChannel(id) {
 
   function _onMessage(evt) {
     var objMessage = JSON.parse(evt.data);
+
+    //console.log('Connected peers in factory:', objMessage);
     switch (objMessage.type) {
       case 'ICECandidate':
         self.onICECandidate(objMessage.ICECandidate, objMessage.source);
@@ -34,6 +36,9 @@ function SignalingChannel(id) {
         break;
       case 'answer':
         self.onAnswer(objMessage.answer, objMessage.source);
+        break;
+      case 'ready': // Event handler for connected peers to signaling server
+        self.onReady(objMessage.ready);
         break;
       default:
         throw new Error('invalid message type');
@@ -80,6 +85,12 @@ function SignalingChannel(id) {
   this.onICECandidate = function (ICECandidate, source) {
     console.log('ICECandidate from peer:', source, ':', ICECandidate);
   };
+
+  //default handler, should be overriden
+  this.onReady = function (ready) {
+    console.log('Peers that are ready for connnection:', ready);
+  };
+
 }
 
 window.createSignalingChannel = function (url, id) {

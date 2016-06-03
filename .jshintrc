@@ -1,6 +1,6 @@
 {
     "undef": true,
-    "unused": true,
+    "unused": false,
     "curly": true,
     "indent": 4,
     "newcap":true,
@@ -8,5 +8,11 @@
     "browser":true,
     "node":true,
     "mocha":true,
-    "devel":true
+    "devel":true,
+
+    // Ignored Warnings
+    "-W003": true,   // 'x' was used before it was defined
+    "-W013": true,   // Missing space after 'x'. It fires with "function() { }"
+    "-W070": true,   // Extra comma. (it breaks older versions of IE)
+    "-W026": true    // Inner functions should be listed at the top of the outer function.
 }

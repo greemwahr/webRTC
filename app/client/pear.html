@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="utf-8">
+        <meta charset="utf-8" http-equiv="refresh" content="180">
         <title>Pear Chat</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
         <script src="signalingChannelFactory.js"></script>
         <script src="pear.js"></script>
+        <script language="javascript" ="text/javascript">
+
+        </script>
     </head>
     <body>
         <div class="container">
-            <div class="list" id="listpear">
-                <ul>
-                    <li></li>
+            <div class="list">
+                <h3>List of connected Pears</h3>
+                <ul id="listConnectedPeer">
                 </ul>
             </div>
 
-            <div id="pearmessages">
-                <h4 id="remotepear"></h4>
-                <p id="viewpear"></p>
-                <textarea id="textpear" placeholder="Write your messages here" rows="2" cols="40"></textarea>
-                <button type="button" id="sendpear">Enter</button>
+            <div id="peermessages">
+                <h4 id="remotepeer"></h4>
+                <p id="viewpeer"></p>
+                <textarea id="peertext" placeholder="Write your messages here" rows="2" cols="40"></textarea>
+                <button type="button" id="sendpeer">Enter</button>
             </div>
         </div>
     </body>

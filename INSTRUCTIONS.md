@@ -19,8 +19,8 @@ Do **not** fork this repository on github. Instead please follow these steps:
 
 ### 1. Create a peer to peer application that allows several peers to send message to each other
 
-- There should be a single page (no separation between caller & callee)
-- once on the page, they must see the list of all other peers connected
+- There should be a single page (no separation between caller & callee) -- DONE
+- once on the page, they must see the list of all other peers connected -- DONE
 - a peer connection must be established with every other peers immediately after the connection to the page.
 - they must be able to send message to any other connected peers directly. (unicast message, broadcast not needed)
 
