@@ -63,7 +63,6 @@ function SignalingChannel(id) {
 
   function sendAnswer(answer, destination) {
     _sendMessage('answer', answer, destination);
-
   }
 
   this.connectToTracker = connectToTracker;

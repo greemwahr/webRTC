@@ -21,7 +21,7 @@ Do **not** fork this repository on github. Instead please follow these steps:
 
 - There should be a single page (no separation between caller & callee) -- DONE
 - once on the page, they must see the list of all other peers connected -- DONE
-- a peer connection must be established with every other peers immediately after the connection to the page.
+- a peer connection must be established with every other peers immediately after the connection to the page. -- DONE
 - they must be able to send message to any other connected peers directly. (unicast message, broadcast not needed)
 
 What are the problem of this architecture ?
