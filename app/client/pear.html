@@ -17,23 +17,14 @@
                 });
             });
 
-                // $('a').click(function (event) {
-                //     console.log('clicked');
-                //     var peerID = Number($(this).text());
-                //     uniquePC(peerID);
-                //     console.log('unicast');
-                // });
             $(function () {
                 $('#sendpeer').on('click', function (e) {
                     console.log('clicked');
                     e.preventDefault();
-                    sendDataStream();
+                    sendDataStream(tmpPeerID);
                     console.log('data sent');
                 });
             });
-
-
-                // $('#sendpeer').click(sendDataStream(event));
         </script>
     </head>
     <body>

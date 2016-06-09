@@ -22,9 +22,10 @@ Do **not** fork this repository on github. Instead please follow these steps:
 - There should be a single page (no separation between caller & callee) -- DONE
 - once on the page, they must see the list of all other peers connected -- DONE
 - a peer connection must be established with every other peers immediately after the connection to the page. -- DONE
-- they must be able to send message to any other connected peers directly. (unicast message, broadcast not needed)
+- they must be able to send message to any other connected peers directly. (unicast message, broadcast not needed) -- DONE (To send unicast message to a peer, click on the hyperlink of the peer firstly before sending a message.)
 
 What are the problem of this architecture ?
+The Multi-Peer WebRTC mesh topology is CPU and Bandwidth Intensive
 
 ### 2. New architecture: instead of realizing the WebRTC signaling using the signaling server, we will now use an hybrid approach
 

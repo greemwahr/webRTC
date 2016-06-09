@@ -10,6 +10,7 @@ var peerID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID 
 var wsUri = 'ws://localhost:8090/';
 var signalingChannel = createSignalingChannel(wsUri, peerID);
 var peerConnections = {};
+var channel = {};
 var ready = [];
 
 window.addEventListener('load', startConnection(), false);
@@ -34,19 +35,19 @@ function startConnection() {
 
 function sendDataStream(tmpPeerID) {
   console.log('called');
-  var message = $('#peertext').val();
-  uniquePC(tmpPeerID);
-  window.channel.send('message');
+  var message = $('textarea#peertext').val();
+  console.log(message);
+  channel[tmpPeerID].send(message);
   console.log('sent');
 }
 
 function receiveDataStream(rcvmsg) {
-  $('#viewpeer').children('span').text(rcvmsg);
+  $('#viewpeer').text(rcvmsg);
 }
 
 function distributeOffer(peerID) {
   var pc = uniquePC(peerID);
-  dataCommunication(pc);
+  dataCommunication(pc, peerID);
   pc.createOffer(function (offer) {
     pc.setLocalDescription(offer);
     console.log('send offer');
@@ -56,30 +57,35 @@ function distributeOffer(peerID) {
   console.error(e);});
 }
 
-function dataCommunication(pc) {
+function dataCommunication(pc, peerID) {
   // Opens a data channel to the remote peer for commnunication
   //:warning the dataChannel must be opened BEFORE creating the offer.
   var _commChannel = pc.createDataChannel('communication', {
           reliable: false,
         });
 
-  window.channel = _commChannel;
+  channel[peerID] = _commChannel;
+
+  // window.channel = _commChannel;
 
   _commChannel.onclose = function (evt) {
-              console.log('dataChannel closed');
-            };
+    console.log('dataChannel closed');
+  };
 
   _commChannel.onerror = function (evt) {
-              console.error('dataChannel error');
-            };
+    console.error('dataChannel error');
+  };
 
   _commChannel.onopen = function () {
-              console.log('dataChannel opened');
-            };
+    console.log('dataChannel opened');
+  };
 
   _commChannel.onmessage = function (message) {
-              receiveDataStream(message.data);
-            };
+    console.log('Event is getting to me:', message);
+    receiveDataStream(message.data);
+  };
+
+  return channel;
 }
 
 function uniquePC(peerID) {
@@ -99,35 +105,16 @@ function uniquePC(peerID) {
   pc.ondatachannel = function (event) {
     var receiveChannel = event.channel;
     console.log('channel received');
-    window.channel = receiveChannel;
+    channel[peerID] = receiveChannel;
+
+    // window.channel = receiveChannel;
     receiveChannel.onmessage = function (event) {
+      console.log('Event is getting to me also');
       receiveDataStream(event.data);
     };
-  };
 
-  // // Opens a data channel to the remote peer for commnunication
-  // //:warning the dataChannel must be opened BEFORE creating the offer.
-  // var _commChannel = pc.createDataChannel('communication', {
-  //       reliable: false,
-  //     });
-  //
-  // window.channel = _commChannel;
-  //
-  // _commChannel.onclose = function (evt) {
-  //           console.log('dataChannel closed');
-  //         };
-  //
-  // _commChannel.onerror = function (evt) {
-  //           console.error('dataChannel error');
-  //         };
-  //
-  // _commChannel.onopen = function () {
-  //           console.log('dataChannel opened');
-  //         };
-  //
-  // _commChannel.onmessage = function (message) {
-  //           receiveDataStream(message.data);
-  //         };
+    return channel;
+  };
 
   return pc;
 
