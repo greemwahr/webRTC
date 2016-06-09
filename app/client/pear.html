@@ -7,7 +7,33 @@
         <script src="signalingChannelFactory.js"></script>
         <script src="pear.js"></script>
         <script language="javascript" ="text/javascript">
+            $(function () {
+                $('#listConnectedPeer').on('click', 'a', function (e) {
+                    console.log('clicked');
+                    e.preventDefault();
+                    var peerID = Number($(this).text());
+                    window.tmpPeerID = peerID;
+                    console.log('end');
+                });
+            });
 
+                // $('a').click(function (event) {
+                //     console.log('clicked');
+                //     var peerID = Number($(this).text());
+                //     uniquePC(peerID);
+                //     console.log('unicast');
+                // });
+            $(function () {
+                $('#sendpeer').on('click', function (e) {
+                    console.log('clicked');
+                    e.preventDefault();
+                    sendDataStream();
+                    console.log('data sent');
+                });
+            });
+
+
+                // $('#sendpeer').click(sendDataStream(event));
         </script>
     </head>
     <body>
@@ -19,10 +45,11 @@
             </div>
 
             <div id="peermessages">
-                <h4 id="remotepeer"></h4>
-                <p id="viewpeer"></p>
                 <textarea id="peertext" placeholder="Write your messages here" rows="2" cols="40"></textarea>
                 <button type="button" id="sendpeer">Enter</button>
+                <hr>
+                <h4 id="remotepeer">Remote peer messages</h4>
+                <p id="viewpeer"></p>
             </div>
         </div>
     </body>

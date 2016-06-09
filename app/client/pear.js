@@ -32,8 +32,21 @@ function startConnection() {
   }
 }
 
+function sendDataStream(tmpPeerID) {
+  console.log('called');
+  var message = $('#peertext').val();
+  uniquePC(tmpPeerID);
+  window.channel.send('message');
+  console.log('sent');
+}
+
+function receiveDataStream(rcvmsg) {
+  $('#viewpeer').children('span').text(rcvmsg);
+}
+
 function distributeOffer(peerID) {
   var pc = uniquePC(peerID);
+  dataCommunication(pc);
   pc.createOffer(function (offer) {
     pc.setLocalDescription(offer);
     console.log('send offer');
@@ -41,6 +54,32 @@ function distributeOffer(peerID) {
   }, function (e) {
 
   console.error(e);});
+}
+
+function dataCommunication(pc) {
+  // Opens a data channel to the remote peer for commnunication
+  //:warning the dataChannel must be opened BEFORE creating the offer.
+  var _commChannel = pc.createDataChannel('communication', {
+          reliable: false,
+        });
+
+  window.channel = _commChannel;
+
+  _commChannel.onclose = function (evt) {
+              console.log('dataChannel closed');
+            };
+
+  _commChannel.onerror = function (evt) {
+              console.error('dataChannel error');
+            };
+
+  _commChannel.onopen = function () {
+              console.log('dataChannel opened');
+            };
+
+  _commChannel.onmessage = function (message) {
+              receiveDataStream(message.data);
+            };
 }
 
 function uniquePC(peerID) {
@@ -62,33 +101,33 @@ function uniquePC(peerID) {
     console.log('channel received');
     window.channel = receiveChannel;
     receiveChannel.onmessage = function (event) {
-      messageCallback(event.data);
+      receiveDataStream(event.data);
     };
   };
 
-  // Opens a data channel to the remote peer for commnunication
-  //:warning the dataChannel must be opened BEFORE creating the offer.
-  var _commChannel = pc.createDataChannel('communication', {
-        reliable: false,
-      });
-
-  window.channel = _commChannel;
-
-  _commChannel.onclose = function (evt) {
-            console.log('dataChannel closed');
-          };
-
-  _commChannel.onerror = function (evt) {
-            console.error('dataChannel error');
-          };
-
-  _commChannel.onopen = function () {
-            console.log('dataChannel opened');
-          };
-
-  _commChannel.onmessage = function (message) {
-            pearCallback(message.data);
-          };
+  // // Opens a data channel to the remote peer for commnunication
+  // //:warning the dataChannel must be opened BEFORE creating the offer.
+  // var _commChannel = pc.createDataChannel('communication', {
+  //       reliable: false,
+  //     });
+  //
+  // window.channel = _commChannel;
+  //
+  // _commChannel.onclose = function (evt) {
+  //           console.log('dataChannel closed');
+  //         };
+  //
+  // _commChannel.onerror = function (evt) {
+  //           console.error('dataChannel error');
+  //         };
+  //
+  // _commChannel.onopen = function () {
+  //           console.log('dataChannel opened');
+  //         };
+  //
+  // _commChannel.onmessage = function (message) {
+  //           receiveDataStream(message.data);
+  //         };
 
   return pc;
 
