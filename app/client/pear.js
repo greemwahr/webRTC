@@ -9,9 +9,9 @@ var peerID = sessionStorage.tabID ? sessionStorage.tabID : sessionStorage.tabID 
                  Math.random();
 var wsUri = 'ws://localhost:8090/';
 var signalingChannel = createSignalingChannel(wsUri, peerID);
-var peerConnections = {};
-var channel = {};
-var ready = [];
+var peerConnections = {}; // Keeps collections of established peers
+var channel = {}; // Keeps collection of opened data channels
+var ready = []; // Keeps collection of peers connected to the signalling server
 
 window.addEventListener('load', startConnection(), false);
 
@@ -33,18 +33,18 @@ function startConnection() {
   }
 }
 
+// Called to send data on opened channel
 function sendDataStream(tmpPeerID) {
-  console.log('called');
   var message = $('textarea#peertext').val();
-  console.log(message);
   channel[tmpPeerID].send(message);
-  console.log('sent');
 }
 
+// Used by ondatachannel event handlers to display messages
 function receiveDataStream(rcvmsg) {
   $('#viewpeer').text(rcvmsg);
 }
 
+// Used to create SDP Offer
 function distributeOffer(peerID) {
   var pc = uniquePC(peerID);
   dataCommunication(pc, peerID);
@@ -57,6 +57,7 @@ function distributeOffer(peerID) {
   console.error(e);});
 }
 
+// Creates RTCDataChannel connection
 function dataCommunication(pc, peerID) {
   // Opens a data channel to the remote peer for commnunication
   //:warning the dataChannel must be opened BEFORE creating the offer.
@@ -65,8 +66,6 @@ function dataCommunication(pc, peerID) {
         });
 
   channel[peerID] = _commChannel;
-
-  // window.channel = _commChannel;
 
   _commChannel.onclose = function (evt) {
     console.log('dataChannel closed');
@@ -81,7 +80,6 @@ function dataCommunication(pc, peerID) {
   };
 
   _commChannel.onmessage = function (message) {
-    console.log('Event is getting to me:', message);
     receiveDataStream(message.data);
   };
 
@@ -106,10 +104,7 @@ function uniquePC(peerID) {
     var receiveChannel = event.channel;
     console.log('channel received');
     channel[peerID] = receiveChannel;
-
-    // window.channel = receiveChannel;
     receiveChannel.onmessage = function (event) {
-      console.log('Event is getting to me also');
       receiveDataStream(event.data);
     };
 
